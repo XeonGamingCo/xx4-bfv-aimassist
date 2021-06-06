@@ -17,7 +17,6 @@ class GameData:
     myinitialspeed = 0
     mypositionoffset = 0
 
-
     def __init__(self):
         self.soldiers = []
 
