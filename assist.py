@@ -13,7 +13,7 @@ fov = 2.0
 
 # Distance Limit
 # Example, set to 100 to limit locking onto soldiers further than 100 meters away.
-distance_limit = None
+distance_limit = 100
 
 # Trigger Button
 # Grab your preferred button from lib/keycodes.py
@@ -72,4 +72,6 @@ if __name__ == "__main__":
     print ("Using screensize: %s x %s" % screensize)
     aimer = aimer.Aimer(screensize, trigger, distance_limit, fov, aim_locations, aim_switch)
     aimer.start()
+
+
 

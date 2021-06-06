@@ -77,7 +77,8 @@ class WinApi():
         self.OpenProcessToken = windll.advapi32.OpenProcessToken
         self.OpenProcessToken.argtypes = (HANDLE, DWORD, POINTER(HANDLE))
         self.OpenProcessToken.restype = BOOL
-        self.CreateToolhelp32Snapshot = CDLL("kernel32.dll").CreateToolhelp32Snapshot
+        self.CreateToolhelp32Snapshot = CDLL(
+            "kernel32.dll").CreateToolhelp32Snapshot
         self.Process32First = CDLL("kernel32.dll").Process32First
         self.Process32Next = CDLL("kernel32.dll").Process32Next
         self.GetLastError = CDLL("kernel32.dll").GetLastError
@@ -100,14 +101,16 @@ class WinApi():
 
     def set_topmost(self, classname, windowname):
         if (classname == "pygame"):
-            print("[+] WARNING: Setting the radar window as TOP MOST (ANTI-CHEAT RISK!)")
+            print(
+                "[+] WARNING: Setting the radar window as TOP MOST (ANTI-CHEAT RISK!)")
         hwnd = self.FindWindow(classname, windowname)
         if (hwnd == 0):
             raise RuntimeError("set_topmost: Could not find window")
         HWND_TOPMOST = -1
         SWP_NOMOVE = 0x0002
         SWP_NOSIZE = 0x0001
-        ret = self.SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE)
+        ret = self.SetWindowPos(hwnd, HWND_TOPMOST, 0,
+                                0, 0, 0, SWP_NOMOVE | SWP_NOSIZE)
         if (ret == 0):
             raise RuntimeError("set_topmost: Could not set window as top-most")
 
@@ -120,7 +123,8 @@ class WinApi():
         TokenElevationType = 18
         elev = DWORD(0)
         retlen = DWORD()
-        res = self.GetTokenInformation(token, TokenElevationType, pointer(elev), sizeof(elev), pointer(retlen))
+        res = self.GetTokenInformation(
+            token, TokenElevationType, pointer(elev), sizeof(elev), pointer(retlen))
         if not res > 0:
             raise RuntimeError("Couldn't get process token information")
         api.CloseHandle(token)
@@ -141,7 +145,8 @@ class WinApi():
 
         global api
         pid = 0
-        snapshot = HANDLE(api.CreateToolhelp32Snapshot(DWORD(0x00000002), DWORD(0)))
+        snapshot = HANDLE(api.CreateToolhelp32Snapshot(
+            DWORD(0x00000002), DWORD(0)))
         process = PROCESSENTRY32()
         process.cntUsage = 0
         process.th32ProcessID = 0
@@ -176,71 +181,86 @@ class WinApi():
     def rpm_uint8(self, handle, addr):
         buffer = c_ubyte(0)
         addr_ = c_ulonglong(addr)
-        ret = self.ReadProcessMemory(handle, addr_, byref(buffer), sizeof(buffer), None)
+        ret = self.ReadProcessMemory(
+            handle, addr_, byref(buffer), sizeof(buffer), None)
         self._access += 1
         if (ret == 0):
             if (self._debug):
-                print("[+] ERROR: ReadProcessMemory Failed: 0x%x" % (self.GetLastError()))
+                print("[+] ERROR: ReadProcessMemory Failed: 0x%x" %
+                      (self.GetLastError()))
                 print("[+] ERROR: Access of Address 0x%x failed" % (addr))
             return 0
         # exit(1)
-        if (self._debug): print("rpm_uint8 -> addr: 0x%x val: 0x%x" % (addr, buffer.value))
+        if (self._debug):
+            print("rpm_uint8 -> addr: 0x%x val: 0x%x" % (addr, buffer.value))
         return buffer.value
 
     def rpm_uint16(self, handle, addr):
         buffer = c_ushort(0)
         addr_ = c_ulonglong(addr)
-        ret = self.ReadProcessMemory(handle, addr_, byref(buffer), sizeof(buffer), None)
+        ret = self.ReadProcessMemory(
+            handle, addr_, byref(buffer), sizeof(buffer), None)
         self._access += 1
         if (ret == 0):
             if (self._debug):
-                print("[+] ERROR: ReadProcessMemory Failed: 0x%x" % (self.GetLastError()))
+                print("[+] ERROR: ReadProcessMemory Failed: 0x%x" %
+                      (self.GetLastError()))
                 print("[+] ERROR: Access of Address 0x%x failed" % (addr))
             return 0
         # exit(1)
-        if (self._debug): print("rpm_uint16 -> addr: 0x%x val: 0x%x" % (addr, buffer.value))
+        if (self._debug):
+            print("rpm_uint16 -> addr: 0x%x val: 0x%x" % (addr, buffer.value))
         return buffer.value
 
     def rpm_uint32(self, handle, addr):
         buffer = c_ulong(0)
         addr_ = c_ulonglong(addr)
-        ret = self.ReadProcessMemory(handle, addr_, byref(buffer), sizeof(buffer), None)
+        ret = self.ReadProcessMemory(
+            handle, addr_, byref(buffer), sizeof(buffer), None)
         self._access += 1
         if (ret == 0):
             if (self._debug):
-                print("[+] ERROR: ReadProcessMemory Failed: 0x%x" % (self.GetLastError()))
+                print("[+] ERROR: ReadProcessMemory Failed: 0x%x" %
+                      (self.GetLastError()))
                 print("[+] ERROR: Access of Address 0x%x failed" % (addr))
             return 0
         # exit(1)
-        if (self._debug): print("rpm_uint32 -> addr: 0x%x val: 0x%x" % (addr, buffer.value))
+        if (self._debug):
+            print("rpm_uint32 -> addr: 0x%x val: 0x%x" % (addr, buffer.value))
         return buffer.value
 
     def rpm_int32(self, handle, addr):
         buffer = c_long(0)
         addr_ = c_ulonglong(addr)
-        ret = self.ReadProcessMemory(handle, addr_, byref(buffer), sizeof(buffer), None)
+        ret = self.ReadProcessMemory(
+            handle, addr_, byref(buffer), sizeof(buffer), None)
         self._access += 1
         if (ret == 0):
             if (self._debug):
-                print("[+] ERROR: ReadProcessMemory Failed: 0x%x" % (self.GetLastError()))
+                print("[+] ERROR: ReadProcessMemory Failed: 0x%x" %
+                      (self.GetLastError()))
                 print("[+] ERROR: Access of Address 0x%x failed" % (addr))
             return 0
         # exit(1)
-        if (self._debug): print("rpm_int32 -> addr: 0x%x val: 0x%x" % (addr, buffer.value))
+        if (self._debug):
+            print("rpm_int32 -> addr: 0x%x val: 0x%x" % (addr, buffer.value))
         return buffer.value
 
     def rpm_float(self, handle, addr):
         buffer = c_float(0)
         addr_ = c_ulonglong(addr)
-        ret = self.ReadProcessMemory(handle, addr_, byref(buffer), sizeof(buffer), None)
+        ret = self.ReadProcessMemory(
+            handle, addr_, byref(buffer), sizeof(buffer), None)
         self._access += 1
         if (ret == 0):
             if (self._debug):
-                print("[+] ERROR: ReadProcessMemory Failed: 0x%x" % (self.GetLastError()))
+                print("[+] ERROR: ReadProcessMemory Failed: 0x%x" %
+                      (self.GetLastError()))
                 print("[+] ERROR: Access of Address 0x%x failed" % (addr))
             return 0
         # exit(1)
-        if (self._debug): print("rpm_float -> addr: 0x%x val: %f" % (addr, buffer.value))
+        if (self._debug):
+            print("rpm_float -> addr: 0x%x val: %f" % (addr, buffer.value))
         return buffer.value
 
     def rpm_uint64(self, handle, addr):
@@ -249,39 +269,48 @@ class WinApi():
         buffer = c_ulonglong(0)
         addr_ = c_ulonglong(addr)
 
-        ret = self.ReadProcessMemory(handle, addr_, byref(buffer), sizeof(buffer), None)
+        ret = self.ReadProcessMemory(
+            handle, addr_, byref(buffer), sizeof(buffer), None)
         # if (self._cache_en):
         #	self._cache[addr] = buffer.value
         self._access += 1
 
         if (ret == 0):
             if (self._debug):
-                print("[+] ERROR: ReadProcessMemory Failed: 0x%x" % (self.GetLastError()))
+                print("[+] ERROR: ReadProcessMemory Failed: 0x%x" %
+                      (self.GetLastError()))
                 print("[+] ERROR: Access of Address 0x%x failed" % (addr))
             return 0
         # exit(1)
-        if (self._debug): print("rpm_uint64 -> addr: 0x%x val: 0x%x" % (addr, buffer.value))
+        if (self._debug):
+            print("rpm_uint64 -> addr: 0x%x val: 0x%x" % (addr, buffer.value))
         return buffer.value
 
     def wpm_uint32(self, handle, addr, value):
-        if (self._debug): print("wpm_uint632 -> addr: 0x%x val: 0x%x" % (addr, value))
+        if (self._debug):
+            print("wpm_uint632 -> addr: 0x%x val: 0x%x" % (addr, value))
         buffer = c_ulong(value)
         addr_ = c_ulonglong(addr)
-        ret = self.WriteProcessMemory(handle, addr_, byref(buffer), sizeof(buffer), None)
+        ret = self.WriteProcessMemory(
+            handle, addr_, byref(buffer), sizeof(buffer), None)
         if (ret == 0):
             if (self._debug):
-                print("[+] ERROR: WriteProcessMemory Failed: 0x%x" % (self.GetLastError()))
+                print("[+] ERROR: WriteProcessMemory Failed: 0x%x" %
+                      (self.GetLastError()))
                 print("[+] ERROR: Access of Address 0x%x failed" % (addr))
         # exit(1)
 
     def wpm_uint64(self, handle, addr, value):
-        if (self._debug): print("wpm_uint64 -> addr: 0x%x val: 0x%x" % (addr, value))
+        if (self._debug):
+            print("wpm_uint64 -> addr: 0x%x val: 0x%x" % (addr, value))
         buffer = c_ulonglong(value)
         addr_ = c_ulonglong(addr)
-        ret = self.WriteProcessMemory(handle, addr_, byref(buffer), sizeof(buffer), None)
+        ret = self.WriteProcessMemory(
+            handle, addr_, byref(buffer), sizeof(buffer), None)
         if (ret == 0):
             if (self._debug):
-                print("[+] ERROR: WriteProcessMemory Failed: 0x%x" % (self.GetLastError()))
+                print("[+] ERROR: WriteProcessMemory Failed: 0x%x" %
+                      (self.GetLastError()))
                 print("[+] ERROR: Access of Address 0x%x failed" % (addr))
         # exit(1)
 
@@ -290,11 +319,13 @@ class WinApi():
         str = ""
         while (1):
             c = c_char()
-            ret = self.ReadProcessMemory(handle, buffer, byref(c), sizeof(c), None)
+            ret = self.ReadProcessMemory(
+                handle, buffer, byref(c), sizeof(c), None)
             self._access += 1
             if (ret == 0):
                 if (self._debug):
-                    print("[+] ERROR: ReadProcessMemory Failed: 0x%x" % (self.GetLastError()))
+                    print("[+] ERROR: ReadProcessMemory Failed: 0x%x" %
+                          (self.GetLastError()))
                     print("[+] ERROR: Access of Address 0x%x failed" % (addr))
                 return ""
             # exit(1)
@@ -302,28 +333,33 @@ class WinApi():
                 break
             str += chr(c.value[0])
             buffer.value += 1
-        if (self._debug): print("rpm_uint64 -> addr: 0x%x val: %s" % (addr, str))
+        if (self._debug):
+            print("rpm_uint64 -> addr: 0x%x val: %s" % (addr, str))
         return str
 
     def rpm_pstring(self, handle, addr):
         buffer = c_ulonglong(0)
         addr_ = c_ulonglong(addr)
-        ret = self.ReadProcessMemory(handle, addr_, byref(buffer), sizeof(buffer), None)
+        ret = self.ReadProcessMemory(
+            handle, addr_, byref(buffer), sizeof(buffer), None)
         self._access += 1
         if (ret == 0):
             if (self._debug):
-                print("[+] ERROR: ReadProcessMemory Failed: 0x%x" % (self.GetLastError()))
+                print("[+] ERROR: ReadProcessMemory Failed: 0x%x" %
+                      (self.GetLastError()))
                 print("[+] ERROR: Access of Address 0x%x failed" % (addr))
             return ""
         # exit(1)
         str = ""
         while (1):
             c = c_char()
-            ret = self.ReadProcessMemory(handle, buffer, byref(c), sizeof(c), None)
+            ret = self.ReadProcessMemory(
+                handle, buffer, byref(c), sizeof(c), None)
             self._access += 1
             if (ret == 0):
                 if (self._debug):
-                    print("[+] ERROR: ReadProcessMemory Failed: 0x%x" % (self.GetLastError()))
+                    print("[+] ERROR: ReadProcessMemory Failed: 0x%x" %
+                          (self.GetLastError()))
                     print("[+] ERROR: Access of Address 0x%x failed" % (addr))
                 return ""
             # exit(1)
@@ -331,14 +367,16 @@ class WinApi():
                 break
             str += chr(c.value[0])
             buffer.value += 1
-        if (self._debug): print("rpm_uint64 -> addr: 0x%x val: %s" % (addr, str))
+        if (self._debug):
+            print("rpm_uint64 -> addr: 0x%x val: %s" % (addr, str))
         return str
 
     def rpm_vec4(self, handle, addr):
         vec4 = c_float * 4
         buffer = vec4()
         addr_ = c_ulonglong(addr)
-        ret = self.ReadProcessMemory(handle, addr_, byref(buffer), sizeof(buffer), None)
+        ret = self.ReadProcessMemory(
+            handle, addr_, byref(buffer), sizeof(buffer), None)
         self._access += 1
         if (ret == 0):
             return 0
@@ -348,7 +386,8 @@ class WinApi():
         mat4 = (c_float * 4) * 4
         buffer = mat4()
         addr_ = c_ulonglong(addr)
-        ret = self.ReadProcessMemory(handle, addr_, byref(buffer), sizeof(buffer), None)
+        ret = self.ReadProcessMemory(
+            handle, addr_, byref(buffer), sizeof(buffer), None)
         self._access += 1
         if (ret == 0):
             return 0
@@ -362,7 +401,8 @@ class WinApi():
     def VirtualQueryEx(self, handle, lpAddress):
         mbi = MEMORY_BASIC_INFORMATION()
         if not windll.kernel32.VirtualQueryEx(handle, LPCVOID(lpAddress), byref(mbi), sizeof(mbi)):
-            print('Error VirtualQueryEx: 0x%08X 0x%08X' % (lpAddress, GetLastError()))
+            print('Error VirtualQueryEx: 0x%08X 0x%08X' %
+                  (lpAddress, GetLastError()))
         return mbi
 
     def VirtualQueryEx64(self, handle, lpAddress):
@@ -416,7 +456,7 @@ class MemAccess(object):
         return self
 
     def isValid(self, addr):
-        return ((addr >= 0x10000) and (addr < 0x000F000000000000));
+        return ((addr >= 0x10000) and (addr < 0x000F000000000000))
 
     def me(self):
         if not self.isValid(self.next_base):
@@ -500,7 +540,8 @@ class memscan():
             data = bytearray(virtsize)
             datatype = (c_ubyte * virtsize)
             buf = datatype.from_buffer(data)
-            api.ReadProcessMemory(pHandle, LPCVOID(virtaddr), buf, c_int(virtsize), None)
+            api.ReadProcessMemory(pHandle, LPCVOID(
+                virtaddr), buf, c_int(virtsize), None)
             data.find(b'\xff\xc0\x22\x90')
             del data
 
@@ -521,7 +562,8 @@ class sigscan():
             secname = ""
             for i in range(8):
                 val = mem[sec].read_uint8(i)
-                if (val == 0): break
+                if (val == 0):
+                    break
                 secname += chr(val)
             virtsize = mem[sec].read_uint32(0x8)
             virtaddr = mem[sec].read_uint32(0xC)
@@ -529,8 +571,10 @@ class sigscan():
             data = bytearray(virtsize)
             datatype = (c_ubyte * virtsize)
             buf = datatype.from_buffer(data)
-            api.ReadProcessMemory(pHandle, LPCVOID(start + virtaddr), buf, c_int(virtsize), None)
-            self._sections += [[secname, start + virtaddr, virtsize, chars, data]]
+            api.ReadProcessMemory(pHandle, LPCVOID(
+                start + virtaddr), buf, c_int(virtsize), None)
+            self._sections += [[secname, start +
+                                virtaddr, virtsize, chars, data]]
 
     def scan(self, sig):
         sig = sig.split()
@@ -545,7 +589,8 @@ class sigscan():
             else:
                 val = int(elem, 16)
                 q += [val]
-                if not keydone: key.append(val)
+                if not keydone:
+                    key.append(val)
         for sec in self._sections:
             data = sec[4]
             size = sec[2]
@@ -589,7 +634,8 @@ def get_codecave(pHandle):
         secname = ""
         for i in range(8):
             val = mem[sec].read_uint8(i)
-            if (val == 0): break
+            if (val == 0):
+                break
             secname += chr(val)
         virtsize = mem[sec].read_uint32(0x8)
         virtaddr = mem[sec].read_uint32(0xC)
@@ -598,12 +644,14 @@ def get_codecave(pHandle):
         prot = DWORD()
         api.VirtualProtectEx(pHandle, LPVOID(start + virtaddr + (virtsize & 0xfffff000)), c_int(0x1000), store,
                              byref(prot))
-        api.VirtualProtectEx(pHandle, LPVOID(start + virtaddr + (virtsize & 0xfffff000)), c_int(0x1000), prot, None)
+        api.VirtualProtectEx(pHandle, LPVOID(
+            start + virtaddr + (virtsize & 0xfffff000)), c_int(0x1000), prot, None)
 
         if ((prot.value & 0x20) and (virtsize & 0xFFF)):
             ccspace = 0x1000 - (virtsize & 0xFFF)
             if (ccspace >= 0x410):
-                codecaves += [start + virtaddr + (virtsize & 0xfffff000) + 0x1000 - 0x400]
+                codecaves += [start + virtaddr +
+                              (virtsize & 0xfffff000) + 0x1000 - 0x400]
     return codecaves[-1]
 
 
@@ -624,10 +672,13 @@ def patch(pHandle, addr, bytes):
     PAGE_FLR = 0xFFFFFFFFFFFFF000
     PAGE_RWX = 0x40
     protection = DWORD()
-    api.VirtualProtectEx(pHandle, LPVOID(addr & PAGE_FLR), c_int(PAGE_SIZE), DWORD(PAGE_RWX), byref(protection))
+    api.VirtualProtectEx(pHandle, LPVOID(addr & PAGE_FLR), c_int(
+        PAGE_SIZE), DWORD(PAGE_RWX), byref(protection))
     buff = (c_ubyte * len(bytes)).from_buffer_copy(bytes)
-    api.WriteProcessMemory(pHandle, LPCVOID(addr), buff, c_int(len(bytes)), None)
-    api.VirtualProtectEx(pHandle, LPVOID(addr & PAGE_FLR), c_int(PAGE_SIZE), protection, byref(protection))
+    api.WriteProcessMemory(pHandle, LPCVOID(
+        addr), buff, c_int(len(bytes)), None)
+    api.VirtualProtectEx(pHandle, LPVOID(addr & PAGE_FLR),
+                         c_int(PAGE_SIZE), protection, byref(protection))
 
 
 ULONG_PTR = PVOID = LPVOID = PVOID64 = c_void_p
@@ -672,7 +723,8 @@ class StackAccess():
         self.h_thread = h_thread
         tbi = THREAD_BASIC_INFORMATION()
         len = c_ulonglong()
-        result = windll.ntdll.NtQueryInformationThread(h_thread, ThreadBasicInformation, byref(tbi), sizeof(tbi), None)
+        result = windll.ntdll.NtQueryInformationThread(
+            h_thread, ThreadBasicInformation, byref(tbi), sizeof(tbi), None)
         if result == STATUS_SUCCESS:
             teb_base = tbi.TebBaseAddress
             self.stack_start = mem[teb_base].read_uint32(0x8)
@@ -683,7 +735,8 @@ class StackAccess():
     def read(self):
         cbuff = (c_char * len(self.buffer)).from_buffer(self.buffer)
 
-        val = api.ReadProcessMemory(self.phandle, c_ulonglong(self.stack_end), byref(cbuff), sizeof(self.buffer), None)
+        val = api.ReadProcessMemory(self.phandle, c_ulonglong(
+            self.stack_end), byref(cbuff), sizeof(self.buffer), None)
         if val == 0:
             return b""
 
@@ -691,5 +744,3 @@ class StackAccess():
 
     def close(self):
         return windll.kernel32.CloseHandle(self.h_thread)
-
-

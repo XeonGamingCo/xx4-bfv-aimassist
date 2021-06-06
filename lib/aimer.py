@@ -291,3 +291,4 @@ class Input_I(Union):
 class Input(Structure):
     _fields_ = [("type", c_ulong),
                 ("ii", Input_I)]
+    

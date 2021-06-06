@@ -5,6 +5,7 @@ from lib import offsets
 playerVelocities = {}
 lastAccel = {}
 
+
 class GameData:
     myplayer = 0
     mysoldier = 0
@@ -57,7 +58,8 @@ def get_handle():
     pHandle = HANDLE(api.OpenProcess(DWORD(0x1f0fff), False, DWORD(pid)))
     priv = api.is_elevated(pHandle)
     if priv == 2:
-        ans = yes_or_no("[+] WARNING! BFV.exe is running as admin, do you still want to continue?")
+        ans = yes_or_no(
+            "[+] WARNING! BFV.exe is running as admin, do you still want to continue?")
         if ans == False:
             exit(0)
     return pHandle.value
@@ -140,10 +142,14 @@ def GetEntityList(pHandle, typeinfo, flink_offset=0x80):
 
 
 def DebugPrintMatrix(mat):
-    print("[%.3f %.3f %.3f %.3f ]" % (mat[0][0], mat[0][1], mat[0][2], mat[0][3]))
-    print("[%.3f %.3f %.3f %.3f ]" % (mat[1][0], mat[1][1], mat[1][2], mat[1][3]))
-    print("[%.3f %.3f %.3f %.3f ]" % (mat[2][0], mat[2][1], mat[2][2], mat[2][3]))
-    print("[%.3f %.3f %.3f %.3f ]\n" % (mat[3][0], mat[3][1], mat[3][2], mat[3][3]))
+    print("[%.3f %.3f %.3f %.3f ]" %
+          (mat[0][0], mat[0][1], mat[0][2], mat[0][3]))
+    print("[%.3f %.3f %.3f %.3f ]" %
+          (mat[1][0], mat[1][1], mat[1][2], mat[1][3]))
+    print("[%.3f %.3f %.3f %.3f ]" %
+          (mat[2][0], mat[2][1], mat[2][2], mat[2][3]))
+    print("[%.3f %.3f %.3f %.3f ]\n" %
+          (mat[3][0], mat[3][1], mat[3][2], mat[3][3]))
 
 
 def process(pHandle, cnt, aim_location):
@@ -165,7 +171,8 @@ def process(pHandle, cnt, aim_location):
     MySoldier = mem[MyPlayer].weakptr(offsets.ClientPlayer_Soldier).me()
     MyTeamId = mem[MyPlayer].read_uint32(offsets.ClientPlayer_TeamID)
     # MyVehicle = mem[MyPlayer].weakptr(offsets.ClientPlayer_Vehicle).me()
-    MyViewmatrix = mem[offsets.GAMERENDERER]()(offsets.GameRenderer_RenderView).read_mat4(offsets.RenderView_ViewMatrix)
+    MyViewmatrix = mem[offsets.GAMERENDERER]()(
+        offsets.GameRenderer_RenderView).read_mat4(offsets.RenderView_ViewMatrix)
     MyTransform = GetEntityTransform(pHandle, MySoldier)
     #MyPos = GetEntityVec4(pHandle, MySoldier)
 
@@ -189,7 +196,7 @@ def process(pHandle, cnt, aim_location):
             drag = BulletEntityData.read_float(0x16C)
 
             #prediction_encrypted_key = mem[Soldier].read_uint64(0x810)
-            #prediction = pm.decrypt_ptr(mem[Soldier].read_uint64(0x810), pm.GetEntityKey(mem[]))
+            # prediction = pm.decrypt_ptr(mem[Soldier].read_uint64(0x810), pm.GetEntityKey(mem[]))
             #print("0x%x" % prediction_encrypted_key)
 
             gamedata.mydrag = drag
@@ -200,14 +207,14 @@ def process(pHandle, cnt, aim_location):
                 playerVelocities[Soldier] = MyTransform[3]
             last = playerVelocities[Soldier]
             try:
-                accel = [MyTransform[3][0] - last[0], MyTransform[3][1] - last[1], MyTransform[3][2] - last[2]]
+                accel = [MyTransform[3][0] - last[0], MyTransform[3]
+                         [1] - last[1], MyTransform[3][2] - last[2]]
             except:
                 accel = [0, 0, 0]
 
             # # if Soldier == 0x13fe34ce0:
             # #    print(accel)
             playerVelocities[Soldier] = MyTransform[3]
-
 
             gamedata.myaccel = accel
 
@@ -226,7 +233,8 @@ def process(pHandle, cnt, aim_location):
         if Transform == 0:
             continue
         occluded = mem[Soldier].read_uint8(offsets.CSE_Occluded)
-        Health = mem[Soldier](offsets.CSE_HealthComponent).read_float(offsets.HC_Health)
+        Health = mem[Soldier](
+            offsets.CSE_HealthComponent).read_float(offsets.HC_Health)
         if Health <= 0:
             # skip if dead
             continue
@@ -238,16 +246,15 @@ def process(pHandle, cnt, aim_location):
             playerVelocities[Soldier] = aim
 
         last = playerVelocities[Soldier]
-        #if cnt % 16 == 0:
+        # if cnt % 16 == 0:
 
         try:
-            accel = [(aim[0] - last[0]) / 2, (aim[1] - last[1]) /2, (aim[2] - last[2]) /2]
+            accel = [(aim[0] - last[0]) / 2, (aim[1] - last[1]) /
+                     2, (aim[2] - last[2]) / 2]
         except:
             accel = [0, 0, 0]
 
         playerVelocities[Soldier] = aim
-
-
 
         SoldierData = GameSoldierData()
         SoldierData.ptr = Soldier
